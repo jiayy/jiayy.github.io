@@ -1,13 +1,13 @@
 # Site settings
-title: Chef Sec
-SEOTitle: 安全圈的好厨师 | Chef Sec
+title: Chef Security
+SEOTitle: 安全圈的好厨师 | Chef Security
 header-img: img/post-bg-desk.jpg
 email: chengjia4574@gmail.com
 description: "移动安全，浏览器安全，内核安全．．研究所"
 keyword: "移动安全, 浏览器安全, 内核安全, 研究, android, iOS, chrome"
 url: "http://jiayy.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
-github_repo: "https://github.com/qiubaiying/qiubaiying.github.io.git" # you code repository
+github_repo: "https://github.com/jiayy/jiayy.github.io.git" # you code repository
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
