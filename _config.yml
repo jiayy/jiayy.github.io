@@ -1,7 +1,8 @@
 # Site settings
 title: Chef Security
 SEOTitle: 安全圈的好厨师 | Chef Security
-header-img: img/post-bg-desk.jpg
+#header-img: img/post-bg-desk.jpg
+header-img: img/food1.jpg
 email: chengjia4574@gmail.com
 description: "移动安全，浏览器安全，内核安全．．研究所"
 keyword: "移动安全, 浏览器安全, 内核安全, 研究, android, iOS, chrome"
