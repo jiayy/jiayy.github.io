@@ -1,8 +1,8 @@
 # Site settings
 title: Panda Security
-SEOTitle: 熊猫安全研究基地 | Panda Security
+SEOTitle: 熊猫安全研究所 | Panda Security Lab
 #header-img: img/post-bg-desk.jpg
-header-img: img/panda1.jpg
+header-img: img/panda.jpg
 email: chengjia4574@gmail.com
 description: "移动安全，浏览器安全，内核安全．．研究所"
 keyword: "移动安全, 浏览器安全, 内核安全, 研究, android, iOS, chrome"
