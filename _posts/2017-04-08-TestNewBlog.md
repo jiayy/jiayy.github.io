@@ -4,7 +4,7 @@ title:      受谷歌致谢漏洞汇总
 subtitle:   Android Security Bulletin 
 date:       2017-04-13
 author:     jiayy
-header-img: img/test.jpg
+header-img: img/post-android-security.jpg
 catalog: true
 tags:
     - android
