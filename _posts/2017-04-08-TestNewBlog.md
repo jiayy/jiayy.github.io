@@ -76,7 +76,7 @@ tags:
 * CVE-2017-0332
 * CVE-2017-0566
 
-![April](https://cl.ly/3k1a1N1j2f3W)
+![April](img/bulletin-20170401.png)
 
 ### Android Security Bulletin—March 2017
 
