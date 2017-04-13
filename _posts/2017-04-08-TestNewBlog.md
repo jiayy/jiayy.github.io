@@ -76,7 +76,7 @@ tags:
 * CVE-2017-0332
 * CVE-2017-0566
 
-![April](img/bulletin-20170401.png)
+![](../img/bulletin-20170401.png)
 
 ### Android Security Bulletin—March 2017
 
@@ -89,7 +89,7 @@ tags:
 * CVE-2017-0529, High
 * CVE-2017-0536, Moderate
 
-![March](https://cl.ly/2H1X3I1y2W0g)
+![March](https://cl.ly/2H1X3I1y2W0g/bulletin-20170301.png)
 
 ### Android Security Bulletin—February 2017
 
