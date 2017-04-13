@@ -1,10 +1,10 @@
 ---
 layout:     post
-title:      强化 swift 中的 print
-subtitle:   强化 swift 中的 print 输出函数
-date:       2017-04-07
-author:     BY
-header-img: img/post-bg-universe.jpg
+title:      NewBlog 
+subtitle:   test new blog 
+date:       2017-04-08
+author:     jiayy
+header-img: img/test.jpg
 catalog: true
 tags:
     - iOS
