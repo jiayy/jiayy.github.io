@@ -1,78 +1,71 @@
 ---
 layout:     post
-title:      强化 swift 中的 print
-subtitle:   强化 swift 中的 print 输出函数
+title:      pwnable.kr Toddlers Bottle [fd] 
+subtitle:   pwnable.kr writeup series 01
 date:       2017-04-07
-author:     BY
+author:     jiayy
 header-img: img/post-bg-universe.jpg
 catalog: true
 tags:
-    - iOS
-    - Swift
-    - Xcode
-    - Debug
+    - pwnable.kr
+    - Toddlers Bottle
+    - writeup
 ---
 
-在 Swift 中，最简单的输出方法就是使用 `print()`，在我们关心的地方输出字符串和值。
-
-当程序变得非常复杂的时候，我们可能会输出很多内容，而想在其中寻找到我们希望的输出其实并不容易。我们往往需要更好更精确的输出，这包括输出这个 log 的文件，调用的行号以及所处的方法名字等等。
-
-在 Swift 中，编译器为我们准备了几个很有用的编译符号，它们分别是：
-
-<table><thead>
-<tr>
-<th>符号</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>#file</td>
-<td>String</td>
-<td>包含这个符号的文件的路径</td>
-</tr>
-<tr>
-<td>#line</td>
-<td>Int</td>
-<td>符号出现处的行号</td>
-</tr>
-<tr>
-<td>#column</td>
-<td>Int</td>
-<td>符号出现处的列</td>
-</tr>
-<tr>
-<td>#function</td>
-<td>String</td>
-<td>包含这个符号的方法名字</td>
-</tr>
-</tbody></table>
-
-
-有了上面的这些编译符号，我们就可以自定义一个输出函数：`printm`
+按照题目提示登陆 ssh　后台, 密码是　guest
 
 ```swift
-public func printm(items: Any..., filename: String = #file, function: String = #function, line: Int = #line) {
-    print("[\((filename as NSString).lastPathComponent) \(line) \(function)]\n",items)
+ssh fd@pwnable.kr -p2222
+```
+登陆后，在当前目录有三个文件: 
+'fd.c' 是代码文件
+'fd' 是一个可执行文件
+'flag' 文件是我们的目标．
+
+在当前目录执行 'ls -l' 
+发现'flag'文件无法直接读取，'fd' 文件带有's'标志位，且跟　'flag' 文件属于同一个用户'fw_pwn', 思路很直接，就是通过执行 'fd' 帮我们读取'flag'
+
+```swift
+fd@ubuntu:~$ ls
+fd  fd.c  flag
+fd@ubuntu:~$ ls -l
+total 16
+-r-sr-x--- 1 fd_pwn fd   7322 Jun 11  2014 fd
+-rw-r--r-- 1 root   root  418 Jun 11  2014 fd.c
+-r--r----- 1 fd_pwn root   50 Jun 11  2014 flag
+```
+
+要达到这个目的需要看 'fd.c' 的代码，如下:
+
+```swift
+#include <stdlib.h>  
+#include <string.h>  
+char buf[32];  
+int main(int argc, char* argv[], char* envp[]){  
+    if(argc<2){  
+        printf("pass argv[1] a number\n");  
+        return 0;  
+    }  
+    int fd = atoi( argv[1] ) - 0x1234;  
+    int len = 0;  
+    len = read(fd, buf, 32);  
+    if(!strcmp("LETMEWIN\n", buf)){  
+        printf("good job :)\n");  
+        system("/bin/cat flag");  
+        exit(0);  
+    }  
+    printf("learn about Linux file IO\n");  
+    return 0;  
+  
 }
 ```
 
-因为输出是一个很消耗性能的操作，所以在releass环境下需要将输出函数去掉，将上面的函数换成：
-
-```swift
-#if DEBUG
-
-public func printm(items: Any..., filename: String = #file, function: String = #function, line: Int = #line) {
-    print("[\((filename as NSString).lastPathComponent) \(line) \(function)]\n",items)
-}
-
-#else
-
-public func printm(items: Any..., filename: String = #file, function: String = #function, line: Int = #line) { }
-
-#endif
-```
+这个代码的作用是从一个文件读取32个字节，如果读出来的内容开头是
+字符串'LETMEWIN\n'则会执行'/bin/cat flag'．　
+读取的文件fd是根据执行参数算出来的(fd = atoi( argv[1] ) - 0x1234),
+所以我们让参数为　0x1234 (4660) 这样算出来的　fd = 0, 即　stdin,
+随即在命令行输入字符串　'LETMEWIN' 回车即可 
 
 #### 参考:
 
-- [《LOG 输出》](http://swifter.tips/log/) - 王巍 (@ONEVCAT)
+- [pwnable](http://pwnable.kr/play.php)
