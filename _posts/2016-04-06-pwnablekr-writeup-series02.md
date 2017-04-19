@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      [pwnable.kr] WriteupSeries02 
+title:      pwnable.kr WriteupSeries02 
 subtitle:   Toddlers Bottle [col]
 date:       2016-04-06
 author:     jiayy
