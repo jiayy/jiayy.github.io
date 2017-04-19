@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      pwnable.kr Toddlers Bottle [fd] 
-subtitle:   pwnable.kr writeup series 02
+title:      [pwnable.kr] WriteupSeries02 
+subtitle:   Toddlers Bottle [col]
 date:       2016-04-06
 author:     jiayy
 header-img: img/post-bg-universe.jpg
