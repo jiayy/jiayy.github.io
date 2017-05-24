@@ -92,7 +92,7 @@ service-worker: true
 # Friends
 friends: [
     {
-        title: "先知论坛",
+        title: "xianzhi",
         href: "https://xianzhi.aliyun.com/forum/fourms.php"
     },{
         title: "LWN",
