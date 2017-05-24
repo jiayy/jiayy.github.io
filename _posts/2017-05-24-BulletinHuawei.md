@@ -13,6 +13,15 @@ tags:
     - security
 ---
 
+### 统计汇总
+
+<table><thead>
+<tr>
+<th>总数</th>
+<th>8</th>
+</tr>
+</thead><tbody>
+
 ### CVE-2015-8223
 [DoS Vulnerability in Camera Driver of Huawei Products](http://www.huawei.com/en/psirt/security-advisories/hw-460489)
 
@@ -33,4 +42,4 @@ tags:
 
 #### 参考:
 
-- [Android Bulletin](https://source.android.com/security/bulletin/) - 谷歌安全漏洞致谢榜
+- [Huawei Advisory](http://www.huawei.com/en/psirt/security-advisories) - 华为安全漏洞致谢榜
