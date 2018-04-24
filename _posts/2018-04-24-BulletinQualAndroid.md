@@ -17,8 +17,8 @@ tags:
 
 | CVE | Google Android | Qualcomm  |
 | ----| ---------------| --------- |
-| CVE-2017-11082 | (test)[www.baidu.com] |
-| CVE-2017-11082 | (test)[www.baidu.com] |
+| CVE-2017-11082 CVE-2017-11082 | [test](www.baidu.com) |
+| CVE-2017-11082 | [test](www.baidu.com) |
 
 
 <table><thead>
