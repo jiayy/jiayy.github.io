@@ -1,17 +1,17 @@
 # Site settings
-title: Panda Security
-SEOTitle: 熊猫安全研究所 | Panda Security
+title: PDS
+SEOTitle: PDS
 header-img: img/post-bg-panda.jpg
 email: chengjia4574@gmail.com
-description: "移动安全，浏览器安全，内核安全．．研究所"
-keyword: "移动安全, 浏览器安全, 内核安全, 研究, android, iOS, chrome"
+description: "PDS"
+keyword: "PDS"
 url: "http://jiayy.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/jiayy/jiayy.github.io.git" # you code repository
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "Governing a large system such as cooking a small fish!"
+sidebar-about-description: "PDS!"
 sidebar-avatar: img/jiayy.png      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
