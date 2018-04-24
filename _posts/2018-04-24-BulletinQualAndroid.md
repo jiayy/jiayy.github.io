@@ -24,23 +24,32 @@ tags:
 </thead><tbody>
 <tr>
 <td>
-* CVE-2017-11082
-* CVE-2017-14885
-* CVE-2017-14889
-* CVE-2017-15830
-* CVE-2017-15831
+CVE-2017-11082<br>
+CVE-2017-14885<br>
+CVE-2017-14889<br>
+CVE-2017-15830<br>
+CVE-2017-15831
 </td>
 <td> [201803 Android Bulletin](https://source.android.com/security/bulletin/pixel/2018-03-01) </td>
 <td> [201803 Qualcomm Bulletin](https://www.codeaurora.org/security-bulletin/2018/03/29/march-2018-code-aurora-security-bulletin)</td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td></td>
+<td>
+CVE-2017-14887<br>
+CVE-2017-15821<br>
+CVE-2017-15834
+</td>
+<td> [201803 Android Bulletin](https://source.android.com/security/bulletin/2018-03-01)</td>
+<td> [201803 Qualcomm Bulletin](https://www.codeaurora.org/security-bulletin/2018/03/29/march-2018-code-aurora-security-bulletin)</td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>
+CVE-2017-15823<br>
+CVE-2017-14892<br>
+CVE-2017-14877<br>
+CVE-2017-14881
+</td>
+<td><https://source.android.com/security/bulletin/pixel/2018-02-01></td>
 <td></td>
 </tr>
 <tr>
