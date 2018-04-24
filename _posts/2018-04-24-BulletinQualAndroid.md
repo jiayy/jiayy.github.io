@@ -13,7 +13,13 @@ tags:
     - security
 ---
 
-### 统计汇总
+#### 我们有一部分漏洞是通过高通转报谷歌的, 在高通漏洞榜公开致谢, 在谷歌漏洞榜以匿名的形式致谢, 整理如下
+
+| CVE | Google Android | Qualcomm  |
+| ----| ---------------| --------- |
+| CVE-2017-11082 | (test)[www.baidu.com] |
+| CVE-2017-11082 | (test)[www.baidu.com] |
+
 
 <table><thead>
 <tr>
