@@ -17,6 +17,8 @@ tags:
 
 | CVE | Google Android 致谢榜 | Qualcomm 致谢榜 |
 | ----| ----------------------| --------------- |
+| CVE-2017-14890 <br> CVE-2017-14894 <br> CVE-2017-15836<br>CVE-2018-5826<br>CVE-2018-3567 <br> CVE-2018-3568 <br>CVE-2018-5828 <br> | [201804 Android pixel Bulletin](https://source.android.com/security/bulletin/pixel/2018-04-01) | [201804 Qualcomm Bulletin](https://www.codeaurora.org/security-bulletin/2018/04/25/april-2018-code-aurora-security-bulletin) |
+| CVE-2018-3566 | [201804 Android Bulletin](https://source.android.com/security/bulletin/2018-04-01)| [201804 Qualcomm Bulletin](https://www.codeaurora.org/security-bulletin/2018/04/25/april-2018-code-aurora-security-bulletin) |
 | CVE-2017-11082<br>CVE-2017-14885<br>CVE-2017-14889<br>CVE-2017-15830<br>CVE-2017-15831 | [201803 Android Bulletin](https://source.android.com/security/bulletin/pixel/2018-03-01) | [201803 Qualcomm Bulletin](https://www.codeaurora.org/security-bulletin/2018/03/29/march-2018-code-aurora-security-bulletin) |
 | CVE-2017-14887<br>CVE-2017-15821<br>CVE-2017-15834 | [201803 Android Bulletin](https://source.android.com/security/bulletin/2018-03-01) | [201803 Qualcomm Bulletin](https://www.codeaurora.org/security-bulletin/2018/03/29/march-2018-code-aurora-security-bulletin) |
 | CVE-2017-15823<br> CVE-2017-14892<br> CVE-2017-14877<br> CVE-2017-14881 | [201802 Android Bulletin](https://source.android.com/security/bulletin/pixel/2018-02-01) | [201802 Qualcomm Bulletin](https://www.codeaurora.org/security-bulletin/2018/02/16/february-2018-code-aurora-security-bulletin)|
