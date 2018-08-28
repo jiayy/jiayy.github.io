@@ -21,13 +21,6 @@ In this talk, they released some valuable information about android kernel secur
 - the attack surface reduction mitigation (such as selinux) works very well
 - other userspace-> kernel mitigations: hardened usercopy and PAN
 - other access vectors such as : wifi/usb/dsp/bluetooth/modem lack mitigations
-- first android devices with LTO+CFI kernels will ship this year
+- first android devices with LTO+CFI kernels will ship this year [CFI of LLVM](https://clang.llvm.org/docs/ControlFlowIntegrity.html)
 
-Supported in 4.9 and 4.14 for arm64 
-CONFIG_LTO_CLANG=y 
-CONFIG_CFI_CLANG=y 
-# CONFIG_CFI_PERMISSIVE=y for debugging. 
-Requires clang ≥ 5.0 and binutils ≥ 2.27.
-
-
-[CFI of LLVM](https://clang.llvm.org/docs/ControlFlowIntegrity.html)
+The most important thing is the introduction of CFI
