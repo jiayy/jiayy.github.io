@@ -300,7 +300,7 @@ OS details: Linux 2.6.18 - 2.6.22
 ### IRC 服务器
 <span id="irc_server"></span>
 
-经过分析，恶意样本连接 IRC 服务的命令格式如 "NICK[ZULL|x86_64]ZM5z"， 这个命令表示恶意样本 NICK[] 加入 IRC 频道 #zull, 使用的密码是写死在可执行文件里的，如下
+经过分析，恶意样本连接 IRC 服务的命令格式如 "NICK[ZULL\|x86_64]ZM5z"， 这个命令表示恶意样本 NICK[] 加入 IRC 频道 #zull, 使用的密码是写死在可执行文件里的，如下
 
 ![](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/botnet-credentials.png)
 
