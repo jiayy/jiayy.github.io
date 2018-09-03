@@ -30,6 +30,7 @@ data: 2018-09-03
 
 
 | FILE 	HASH VALUE					           |	 FILE NAME   | FUNCTION         |
+| -----------------------------------------------------------------|-----------------|------------------|
 | 4c1ff6424e1d47921a9c3822c67b6d288e67781d22ee1bc4f82fc11509bfb479 |	a09rndgxtx   |	botnet binary   |
 | 40a9be5a72284a14939271e244a9904142c7e87e64d2b1a476b51d36c5f2de26 |	a88hfdje8    |  botnet binary   |
 | f4bed53e2a0d273f00e82825607164ad20caa5f1a02e48e4b5627a819f49df8b |	ab89484bdhd  |	botnet binary   |
