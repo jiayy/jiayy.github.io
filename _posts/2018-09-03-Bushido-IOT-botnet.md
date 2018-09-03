@@ -15,7 +15,7 @@ data: 2018-09-03
 * [IRC服务器](#irc_server)
 * [恶意样本的功能](#malware_functionality)
 * [恶意样本背后的人](#bad_actors)
-* [结论](conclusion)
+* [结论](#conclusion)
 
 这篇文章介绍一个代号为 Bushido 的僵尸网络，据悉该僵尸网络背后组织为 Offsecurity.  很有意思的是，这个僵尸网络既可以控制 IOT 设备作为发动 DOS 攻击的载体，也可以控制 web 服务器，文章会介绍它怎么通过若干 shell 脚本感染众多目标设备，同时也会分析该恶意软件背后的黑客。
 
