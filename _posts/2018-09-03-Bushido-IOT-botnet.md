@@ -301,7 +301,7 @@ OS details: Linux 2.6.18 - 2.6.22
 
 经过分析，恶意样本连接 IRC 服务的命令格式如 NICK[ZULL|x86_64]ZM5z， 这个命令表示恶意样本 NICK[] 加入 IRC 频道 #zull, 使用的密码是写死在可执行文件里的，如下
 
-[passwd0](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/botnet-credentials.png)
+![](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/botnet-credentials.png)
 
 ## 恶意终端的功能
 <span id="malware_functionality"></span>
@@ -311,14 +311,14 @@ OS details: Linux 2.6.18 - 2.6.22
 1. DDOS 攻击，这是主要功能，集成了多种 DDOS 攻击，如 ICMP flood, TCP/UDP flood
 2. 恶意终端可以被 CNC 远程关闭，这个关闭恶意终端的命令的密码是： “FreakIsYourGod!!!”,也是写死在二进制里的，如下
 
-[passwd](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/disable-password.png)
+![](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/disable-password.png)
 
 3. 恶意终端可以从服务器下载新的可执行文件，也可以下载源码然后自己编译出可执行文件
 4. 恶意终端可以跳转到新的服务器，如果当前服务器失能
 
 逆向分析发现恶意终端二进制文件存在一个结构体数组，该结构体第一个元素是一个字符串（命令的名称），第二个元素是一个函数指针（命令的实现函数），这个数组就是指令列表，如下：
 
-[functions](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/bot-functions.png)
+![](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/bot-functions.png)
 
 小结一下，恶意终端包括运行在 IOT 设备上的可执行文件和运行在web服务器上的脚本，这些恶意终端会连接 IRC 服务器对应的频道，iot 设备的恶意终端连接 #zull 频道，web 服务器的恶意终端连接 #pma 频道，然后等待 IRC 服务器下发指令，这些指令整理如下：
 
@@ -395,7 +395,7 @@ OS details: Linux 2.6.18 - 2.6.22
 
 当我们连接上 IRC 服务器的时候会发现如下信息：
 
-[botnet](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/irc-botnet.png)
+![](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/irc-botnet.png)
 
 我在 twitter 上搜索以上关键字，结果发现了两个账号
 
