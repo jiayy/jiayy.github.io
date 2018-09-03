@@ -6,58 +6,56 @@ data: 2018-09-03
 
 # 逆向 Bushido IOT 僵尸网络
 
-[原文](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/)
+这篇文章介绍一个代号为 Bushido 的僵尸网络，这个僵尸网络既可以控制 IOT 设备发动 DDOS 攻击，也可以控制 web 服务器发动 DDOS 攻击，本文介绍该恶意软件的感染行为，也会尝试分析该恶意软件背后的作者。
 
 * [恶意样本](#malware_samples)
 * [静态分析](#static_analysis)
 * [扫描服务器](#scan_server)
 * [CNC服务器](#cnc_server)
-* [IRC服务器](#irc_server)
+ + [IRC服务器](#irc_server)
 * [恶意样本的功能](#malware_functionality)
 * [恶意样本背后的人](#bad_actors)
 * [结论](#conclusion)
 
-这篇文章介绍一个代号为 Bushido 的僵尸网络，据悉该僵尸网络背后组织为 Offsecurity.  很有意思的是，这个僵尸网络既可以控制 IOT 设备作为发动 DOS 攻击的载体，也可以控制 web 服务器，文章会介绍它怎么通过若干 shell 脚本感染众多目标设备，同时也会分析该恶意软件背后的黑客。
-
-感谢 MalwareMustDie 提供了本人此次分析的恶意脚本，简单来说，这些脚本的功能是从恶意服务器下载若干可执行文件然后执行他们，针对不同平台会下载针对性的可执行文件，如下：
+感谢 MalwareMustDie 提供本次分析的初始脚本，简单来说，这些脚本的功能是从服务器下载若干可执行文件然后执行他们，针对不同平台会下载对应的可执行文件，如下：
 
 ![](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/malware-samples.png)
 
-在这篇文章里我们选择了逆向分析 64位平台的 ELF 样本，其他平台的样本逻辑功能是一样的。
+在这篇文章里我们选择了64位的 ELF 样本进行逆向分析，其他平台的样本逻辑功能是一样的。
 
 ## 恶意样本
 <span id="malware_samples"></span>
 
-下面是我们分析出来的所有样本文件
+首先，列一下最后分析出来的该僵尸网路所有的文件
 
 
-* FILE HASH VALUE	                                                        FILE NAME	FUNCTION
-* 4c1ff6424e1d47921a9c3822c67b6d288e67781d22ee1bc4f82fc11509bfb479	a09rndgxtx	botnet binary
-* 40a9be5a72284a14939271e244a9904142c7e87e64d2b1a476b51d36c5f2de26	a88hfdje8	botnet binary
-* f4bed53e2a0d273f00e82825607164ad20caa5f1a02e48e4b5627a819f49df8b	ab89484bdhd	botnet binary
-* d12ffbef4d85806d77294377956c4ecc48ac9b8c3bddbf26a917723f80c719fb	adjde99vhc	botnet binary
-* c1b12ad1eb4e64896a66dc9b4e83f0e3a7d2d4c79819b68853f0f64fd329ac83	adjs8993bd	botnet binary
-* 37ac5b9aef6955a7a393d87ee656656851c313896fdeaff3b591e68ebda7a21d	agf63683gd	botnet binary
-* 5a8a8ea38ac8202373474e5ce535efd2302543a5aa595aa00bd3b553467ffd34	alfkdcj9e8	botnet binary
-* fd171c6b8f870bf64885cb05a5f1da3581537810652a9714a592c21889722198	alo99edgwu	botnet binary
-* 9bad4e105c1701c965fd65118a14e06d222ca13eb9adb3c9e1e4fd7a80374087	apr98dgs5c	botnet binary
-* ca5bb4a794663f35c1ded854e5157e8d077624501514ecac329be7ada8e0248c	aqerd783nd	botnet binary
-* 7c492dde22c828fffc3067ef6aaa5d466cab76858079ce57492ce9bbfd7e449a	atyur7837s	botnet binary
-* 5fb8b5590b4845b31988f636a5a09b02bdbb3e730dd1f78d8f04a02013cb760d	ambvjcv9e0	botnet binary
-* 70d7adcd931eb49ede937b64f1653a6710fbcea891e2ab186165cff1d3429945	8UsA1.sh	infection script
-* 36f38298c5345abf9f0036890b357610078327a4a0a0e61db79fe7afb591830d	update.sh	infection script
-* eabee288c9605b29f75cd23204b643cfe4d175851b7d57c3d3d73703bd0f8ec8	ftp1.sh	        download the malware samples via ftp and install it
-* 2544f0299a5795bf12494e2cbe09701cb024b06a0b924c91de0d35efb955a5fe	pma.php	        php botnet more on it in later section
-* 18d6a4280adf67e2adf7a89aa11faa93a5ed6fc9d64b31063386d762b92b45d3	pma.pl	        pearl botnet more on it in later section
+| FILE 	HASH VALUE					           |	 FILE NAME   | FUNCTION         |
+| 4c1ff6424e1d47921a9c3822c67b6d288e67781d22ee1bc4f82fc11509bfb479 |	a09rndgxtx   |	botnet binary   |
+| 40a9be5a72284a14939271e244a9904142c7e87e64d2b1a476b51d36c5f2de26 |	a88hfdje8    |  botnet binary   |
+| f4bed53e2a0d273f00e82825607164ad20caa5f1a02e48e4b5627a819f49df8b |	ab89484bdhd  |	botnet binary   |
+| d12ffbef4d85806d77294377956c4ecc48ac9b8c3bddbf26a917723f80c719fb |	adjde99vhc   |	botnet binary   |
+| c1b12ad1eb4e64896a66dc9b4e83f0e3a7d2d4c79819b68853f0f64fd329ac83 |	adjs8993bd   |	botnet binary   |
+| 37ac5b9aef6955a7a393d87ee656656851c313896fdeaff3b591e68ebda7a21d |	agf63683gd   |	botnet binary   |
+| 5a8a8ea38ac8202373474e5ce535efd2302543a5aa595aa00bd3b553467ffd34 |	alfkdcj9e8   |	botnet binary   |
+| fd171c6b8f870bf64885cb05a5f1da3581537810652a9714a592c21889722198 |	alo99edgwu   |	botnet binary   |
+| 9bad4e105c1701c965fd65118a14e06d222ca13eb9adb3c9e1e4fd7a80374087 |	apr98dgs5c   |	botnet binary   |
+| ca5bb4a794663f35c1ded854e5157e8d077624501514ecac329be7ada8e0248c |	aqerd783nd   |	botnet binary   |
+| 7c492dde22c828fffc3067ef6aaa5d466cab76858079ce57492ce9bbfd7e449a |	atyur7837s   |	botnet binary   |
+| 5fb8b5590b4845b31988f636a5a09b02bdbb3e730dd1f78d8f04a02013cb760d |	ambvjcv9e0   |	botnet binary   |
+| 70d7adcd931eb49ede937b64f1653a6710fbcea891e2ab186165cff1d3429945 |	8UsA1.sh     |  infection script|
+| 36f38298c5345abf9f0036890b357610078327a4a0a0e61db79fe7afb591830d |	update.sh    |  infection script|
+| eabee288c9605b29f75cd23204b643cfe4d175851b7d57c3d3d73703bd0f8ec8 |	ftp1.sh	     |  download the malware samples via ftp and install it|
+| 2544f0299a5795bf12494e2cbe09701cb024b06a0b924c91de0d35efb955a5fe |	pma.php	     |  php botnet more on it in later section|
+| 18d6a4280adf67e2adf7a89aa11faa93a5ed6fc9d64b31063386d762b92b45d3 |	pma.pl	     |  pearl botnet more on it in later section|
 
 ## 静态分析
 <span id="static_analysis"></span>
 
-首先，查看二进制文件的文件信息
+64位平台的恶意可执行文件是 ambvjcv9e0 这个文件，首先，查看它的文件信息
 
 ``` bash
-1 $ file ambvjcv9e0
-2 ambvjcv9e0: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, not stripped
+$ file ambvjcv9e0
+ambvjcv9e0: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, not stripped
 ```
 如上，这是一个64位的elf文件，接下去我们查看 elf 头信息
 
@@ -198,7 +196,7 @@ $ readelf -s x64_ambvjcv9e0 | grep -F .c
 58: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS ioctl.c
 59: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS kill.c
 ```
-发现了一个有趣的文件 Bushido-IRC.c（本恶意样本名字的来源），更有意思的是，接下去我发现不需要用反编译的手段，直接用 strings 工具就可以发现该恶意样本的很多有用信息
+发现了一个有趣的文件 Bushido-IRC.c（本僵尸网络名字的来源），更有意思的是，接下去我发现不需要用反编译的手段，直接用 strings 工具就可以发现该恶意样本的很多有用信息
 
 ``` bash
 $ strings ambvjcv9e0
@@ -219,7 +217,7 @@ i686
 powerpc
 ```
 
-通过浏览 strings 输出可以发现该样本的信息如下：
+通过浏览 strings 输出我发现了该样本的有趣信息：
 
 * CNC 服务器的 IP 地址
 * telnet 服务的账号和密码
@@ -234,7 +232,7 @@ powerpc
 * nmap 扫描命令
 * 编译脚本的名字
 
-通过上述字符串可以大概判断本恶意软件的功能，但是为了搞清楚其工作流程，以及如何与 CNC 服务器连接，我们需要深入分析，由于我们已经知道了 ip 地址，我们可以直接对 CNC 服务器做端口扫描等渗透操作
+通过上述字符串可以大概判断本恶意软件的功能，但是为了搞清楚其工作流程，以及如何与 CNC 服务器连接，我们需要深入分析，由于我们已经知道了 ip 地址，我们可以直接对 CNC 服务器做端口扫描
 
 ## 扫描服务器
 <span id="scan_server"></span>
@@ -275,8 +273,9 @@ powerpc
 
 ```
 根据扫描结果可以得到下面的结论：
-1) 这是基于 IRC 的 CNC 服务器
-2）ftp 服务可能可以使用：进一步地，我使用默认ftp账号和密码（anonymous）成功登录了该ftp服务，登录了ftp服务之后，就可以得到我们前面提到的那一堆可执行文件，同时，还发现了 pma.php, pma.el 等脚本文件，在其中一个脚本文件 8UsA1.sh 里，我们发现它还连接了另外一个ip地址： 185.244.25.217
+
+* 这是基于 IRC 的 CNC 服务器
+* ftp 服务可能可以使用：进一步地，我使用默认ftp账号和密码（anonymous）成功登录了该ftp服务，登录了ftp服务之后，就可以得到我们前面提到的所有文件，在其中一个脚本文件 8UsA1.sh 里，我们发现它还连接了另外一个ip地址： 185.244.25.217
 
 2， 服务器B(ip 185.244.25.217)
 
@@ -294,17 +293,17 @@ OS details: Linux 2.6.18 - 2.6.22
 
 从上述分析我得出结论，这个恶意样本是通过服务器A基于 IRC 控制的僵尸网络，使用IRC客户端链接CNC服务器后可以发现有两个频道
 
-1. #pma - 恶意脚本感染了web服务器后会通过 IRC 加入 CNC 服务器的这个频道
-2. #zull - 恶意二进制感染了iot设备后通过 IRC 加入 CNC 服务器的这个频道
+* #pma - 恶意脚本感染了web服务器后会通过 IRC 加入 CNC 服务器的这个频道
+* #zull - 恶意二进制感染了iot设备后通过 IRC 加入 CNC 服务器的这个频道
 
 ### IRC 服务器
 <span id="irc_server"></span>
 
-恶意样本连接 IRC 服务的命令格式如 NICK[ZULL|x86_64]ZM5z， 这个命令表示恶意样本 NICK[] 加入 IRC 频道 #zull, 使用的密码是写死在可执行文件里的，如下
+经过分析，恶意样本连接 IRC 服务的命令格式如 NICK[ZULL|x86_64]ZM5z， 这个命令表示恶意样本 NICK[] 加入 IRC 频道 #zull, 使用的密码是写死在可执行文件里的，如下
 
-[](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/botnet-credentials.png)
+[passwd0](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/botnet-credentials.png)
 
-## 恶意样本的功能
+## 恶意终端的功能
 <span id="malware_functionality"></span>
 
 通过分析可以知道恶意样本具备以下能力：
@@ -312,16 +311,16 @@ OS details: Linux 2.6.18 - 2.6.22
 1. DDOS 攻击，这是主要功能，集成了多种 DDOS 攻击，如 ICMP flood, TCP/UDP flood
 2. 恶意终端可以被 CNC 远程关闭，这个关闭恶意终端的命令的密码是： “FreakIsYourGod!!!”,也是写死在二进制里的，如下
 
-[](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/disable-password.png)
+[passwd](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/disable-password.png)
 
 3. 恶意终端可以从服务器下载新的可执行文件，也可以下载源码然后自己编译出可执行文件
 4. 恶意终端可以跳转到新的服务器，如果当前服务器失能
 
-进一步分析发现二进制文件存在一个结构体数组，该结构体第一个元素是一个字符串（命令的名称），第二个元素是一个函数指针（命令的实现函数），如下：
+逆向分析发现恶意终端二进制文件存在一个结构体数组，该结构体第一个元素是一个字符串（命令的名称），第二个元素是一个函数指针（命令的实现函数），这个数组就是指令列表，如下：
 
-[](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/bot-functions.png)
+[functions](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/bot-functions.png)
 
-小结一下，这个恶意样本终端包括运行在 IOT 设备上恶意可执行文件和运行在web服务器上的恶意脚本，这些恶意终端会连接 IRC 服务器对应的频道，iot 设备的恶意终端连接 #zull 频道，web 服务器的恶意终端连接 #pma 频道，然后等待 IRC 服务器下发指令，这些指令整理如下：
+小结一下，恶意终端包括运行在 IOT 设备上的可执行文件和运行在web服务器上的脚本，这些恶意终端会连接 IRC 服务器对应的频道，iot 设备的恶意终端连接 #zull 频道，web 服务器的恶意终端连接 #pma 频道，然后等待 IRC 服务器下发指令，这些指令整理如下：
 
 ### 恶意可执行文件拥有的指令
 <span id="binary_functionality"></span>
@@ -396,7 +395,7 @@ OS details: Linux 2.6.18 - 2.6.22
 
 当我们连接上 IRC 服务器的时候会发现如下信息：
 
-[](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/irc-botnet.png)
+[botnet](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/irc-botnet.png)
 
 我在 twitter 上搜索以上关键字，结果发现了两个账号
 
@@ -413,3 +412,7 @@ OS details: Linux 2.6.18 - 2.6.22
 <span id="conclusion"></span>
 
 这个恶意软件并没有新奇的行为，我猜测它是根据开源工具 Mirai 改的，他们通过控制web服务器和 iot 设备发动 DDOS 攻击，并通过 IRC 服务器控制所以恶意终端。
+
+## 参考
+
+[原文](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/)
