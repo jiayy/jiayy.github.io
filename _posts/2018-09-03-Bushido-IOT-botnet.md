@@ -416,4 +416,4 @@ OS details: Linux 2.6.18 - 2.6.22
 
 ## 参考
 
-[原文](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/)
+[Reversing Bushido IOT Botnet by ZullSec](http://www.mien.in/2018/09/02/reversing-bushido-iot-botnet-by-zullsec/)
