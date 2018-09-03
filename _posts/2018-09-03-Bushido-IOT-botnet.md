@@ -219,18 +219,18 @@ powerpc
 
 通过浏览 strings 输出我发现了该样本的有趣信息：
 
-* CNC 服务器的 IP 地址
-* telnet 服务的账号和密码
-* 若干 HTTP headers 相关的字符串
-* 若干 user agent 相关的字符串
-* 大量种族主义的言论
-* 大量IRC命令和相关字符串
-* 恶意软件使用说明
-* 恶意软件更新命令和大量其他命令
-* 错误处理相关的字符串
-* libc 库函数名
-* nmap 扫描命令
-* 编译脚本的名字
+1. CNC 服务器的 IP 地址
+2. telnet 服务的账号和密码
+3. 若干 HTTP headers 相关的字符串
+4. 若干 user agent 相关的字符串
+5. 大量种族主义的言论
+6. 大量IRC命令和相关字符串
+7. 恶意软件使用说明
+8. 恶意软件更新命令和大量其他命令
+9. 错误处理相关的字符串
+10. libc 库函数名
+11. nmap 扫描命令
+12. 编译脚本的名字
 
 通过上述字符串可以大概判断本恶意软件的功能，但是为了搞清楚其工作流程，以及如何与 CNC 服务器连接，我们需要深入分析，由于我们已经知道了 ip 地址，我们可以直接对 CNC 服务器做端口扫描
 
@@ -274,8 +274,8 @@ powerpc
 ```
 根据扫描结果可以得到下面的结论：
 
-* 这是基于 IRC 的 CNC 服务器
-* ftp 服务可能可以使用：进一步地，我使用默认ftp账号和密码（anonymous）成功登录了该ftp服务，登录了ftp服务之后，就可以得到我们前面提到的所有文件，在其中一个脚本文件 8UsA1.sh 里，我们发现它还连接了另外一个ip地址： 185.244.25.217
+1. 这是基于 IRC 的 CNC 服务器
+2. ftp 服务可能可以使用：进一步地，我使用默认ftp账号和密码（anonymous）成功登录了该ftp服务，登录了ftp服务之后，就可以得到我们前面提到的所有文件，在其中一个脚本文件 8UsA1.sh 里，我们发现它还连接了另外一个ip地址： 185.244.25.217
 
 2， 服务器B(ip 185.244.25.217)
 
@@ -293,8 +293,8 @@ OS details: Linux 2.6.18 - 2.6.22
 
 从上述分析我得出结论，这个恶意样本是通过服务器A基于 IRC 控制的僵尸网络，使用IRC客户端链接CNC服务器后可以发现有两个频道
 
-* #pma - 恶意脚本感染了web服务器后会通过 IRC 加入 CNC 服务器的这个频道
-* #zull - 恶意二进制感染了iot设备后通过 IRC 加入 CNC 服务器的这个频道
+1. #pma - 恶意脚本感染了web服务器后会通过 IRC 加入 CNC 服务器的这个频道
+2. #zull - 恶意二进制感染了iot设备后通过 IRC 加入 CNC 服务器的这个频道
 
 ### IRC 服务器
 <span id="irc_server"></span>
@@ -399,14 +399,14 @@ OS details: Linux 2.6.18 - 2.6.22
 
 我在 twitter 上搜索以上关键字，结果发现了两个账号
 
-* [m4licious](https://twitter.com/m4licious_0sec)
-* [M1rOx](https://twitter.com/M1r0x__)
+1. [m4licious](https://twitter.com/m4licious_0sec)
+2. [M1rOx](https://twitter.com/M1r0x__)
 
 这些账号属于某个称为 Offsecurity 的组织，我猜测他们试图将这个僵尸网络出售，通过一点谷歌搜索我发现了更多信息：
 
-* [Twitter](https://twitter.com/zullsec)
-* [facebook](https://www.facebook.com/ZullSec)
-* [youtube](https://www.youtube.com/watch?v=l2m-i0pmC9w)
+1. [Twitter](https://twitter.com/zullsec)
+2. [facebook](https://www.facebook.com/ZullSec)
+3. [youtube](https://www.youtube.com/watch?v=l2m-i0pmC9w)
 
 ## 结论
 <span id="conclusion"></span>
