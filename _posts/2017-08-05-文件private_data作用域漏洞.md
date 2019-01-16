@@ -43,7 +43,7 @@ author : <a href="https://twitter.comengjia4574" target="_blank">jiayy(@chengjia
 353         file->private_data = inode->i_private; 
 ```
 
-这行代码很有意思, private_data 是 struct file 的 私有数据, i_private 是 struct inode 的私有数据, 这行代码将 struct inode 上的 i_private 直接赋值给了struct file 上的 private_data, 而我们知道，struct file 和 struct inode 在内核的作用域（作用范围）是不一样的。
+private_data 是 struct file 的 私有数据, i_private 是 struct inode 的私有数据, 这行代码将 struct inode 上的 i_private 直接赋值给了struct file 上的 private_data, 而我们知道，struct file 和 struct inode 在内核的作用域（作用范围）是不一样的。
 
 
 ![1](https://www.ibm.com/developerworks/library/l-virtual-filesystem-switch/figure7.gif)
@@ -52,10 +52,11 @@ author : <a href="https://twitter.comengjia4574" target="_blank">jiayy(@chengjia
 用户态进程用系统调用 open 打开一个文件会返回一个文件描述符 fd, 其在内核空间对应的实体就是一个 struct file 结构体, 一个进程打开的所有文件组成一个 struct file 数组， fd 其实就是这个数组的下标。当该进程对某个 fd 调用 open/read/write/close 系统调用时，内核会调用这个 struct file 结构上的 f_op 指针里的函数， 这个 f_op 就是驱动的底层函数。
 
 每个file结构体都有一个指向dentry结构体的指针，“dentry”是directory entry（目录项）的缩写。
+
 每个dentry结构体都有一个指针指向inode结构体, inode结构体保存着从磁盘inode读上来的信息。例如所有者、文件大小、文件类型和权限位等。
 
 
-现在再回头看前面那句代码:
+回头看那句代码:
 
 ```c 
 353         file->private_data = inode->i_private; 
@@ -175,8 +176,7 @@ static int msm_pc_debug_counters_file_open(struct inode *inode,
 332 }
 ``` 
 
-1）的变种，虽然同样是在 open 函数里分配一块堆内存，并在 release 函数里释放，然而，这块内存没有保存在 file->private_data 指针里，而是存放在一个全局变量 “debug_buffer”
-里。 显然，多个进程打开这个驱动文件后，都能操作到这个全局变量，因而有 race condition 风险。
+1）的变种，虽然同样是在 open 函数里分配一块堆内存，并在 release 函数里释放，然而，这块内存没有保存在 file->private_data 指针里，而是存放在一个全局变量 “debug_buffer” 里。 显然，多个进程打开这个驱动文件后，都能操作到这个全局变量，因而有 race condition 风险。
 
 ```c
 3）
@@ -205,11 +205,12 @@ static int debug_open(struct inode *inode, struct file *file)
 332 }
 ```
 
-file->private_data 指针指向全局数组，存在race conditon
+file->private_data 指针指向全局数组，存在 race conditon 风险
 
-
-<a href="https://source.android.com/security/bulletin/2017-05-01" target="_blank">挖到cve:</a>  
+基于作用域不当<a href="https://source.android.com/security/bulletin/2017-05-01" target="_blank">挖到cve:</a>  
 
 * CVE-2016-10285, CVE-2016-10288, CVE-2016-10290
 * CVE-2017-0624, CVE-2017-0616, CVE-2017-0617 
 * CVE-2016-10294, CVE-2016-10295, CVE-2016-10296
+
+总结：驱动工程师有必要了解vfs几个数据结构的关系，才能避免类似由于作用域混乱导致的安全风险
