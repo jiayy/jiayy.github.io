@@ -19,7 +19,6 @@ tags:
 
 | CVE | Google Android 致谢榜 | Qualcomm 致谢榜 |
 | ----| ----------------------| --------------- |
-
 |CVE-2018-5904 <br> CVE-2018-5908 <br> CVE-2018-5909 <br> CVE-2018-5910<br> | [201808 Android Pixel Bulletin](https://source.android.com/security/bulletin/pixel/2018-08-01) | [201811 Qualcomm Bulletin](https://www.codeaurora.org/security-bulletin/2018/11/05/november-2018-code-aurora-forum-security-bulletin) |
 |CVE-2018-11293<br> CVE-2018-11301 <br> CVE-2018-11295<br> CVE-2018-11276<br> CVE-2018-11273<br> CVE-2018-11270<br> | [201809 Android Pixel Bulletin](https://source.android.com/security/bulletin/pixel/2018-09-01) | [201809 Qualcomm Bulletin](https://www.codeaurora.org/security-bulletin/2018/09/04/september-2018-code-aurora-security-bulletin) |
 |CVE-2018-11297<br> CVE-2018-3570 <br> | [201807 Android Pixel Bulletin](https://source.android.com/security/bulletin/pixel/2018-07-01) | [201809 Qualcomm Bulletin](https://www.codeaurora.org/security-bulletin/2018/09/04/september-2018-code-aurora-security-bulletin) |
