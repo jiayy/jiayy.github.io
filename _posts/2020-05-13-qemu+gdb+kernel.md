@@ -68,7 +68,7 @@ sudo rm -rf $DIR
 sudo mkdir -p $DIR
 sudo chmod 0755 $DIR
 
-INSTALL_PKGS=openssh-server,curl,tar,gcc,libc6-dev,time,strace,sudo,less,psmisc,net-tools,build-essential,vim,git,make,grub2
+INSTALL_PKGS=openssh-server,curl,tar,gcc,libc6-dev,time,strace,sudo,less,psmisc,net-tools,build-essential,vim,git,make
 
 sudo debootstrap --include=$INSTALL_PKGS --components=main,contrib,non-free $RELEASE $DIR
 
