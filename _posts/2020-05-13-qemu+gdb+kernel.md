@@ -15,11 +15,16 @@ tags:
 
 ## Kernel 
 
-直接用主线代码，而不是 ubuntu 维护的内核代码
+用主线代码, git 下载
 
 ```c
 git clone https://github.com/torvalds/linux.git $KERNEL
 ```
+
+用 ubuntu 维护的内核代码, 下载对应版本的源码包并解压,　比如 ubuntu20.04 对应的源码包为　linux-source-5.4.0
+[http://archive.ubuntu.com/ubuntu/pool/main/l/linux/linux_5.4.0.orig.tar.gz](focal linux-source-5.4.0)
+
+如果是调试内核漏洞利用，则推荐使用主线的源码，因为对应用层依赖不多，如果是调试内核模块或者工具，则推荐使用ubuntu维护的源码包，因为很多依赖的库需要从ubuntu的源下载，内核跟ubuntu保持一致比较省事
 
 编译时要保证　CONFIG_DEBUG_INFO 打开，最好是同时让　CONFIG_RANDOMIZE_BASE 关闭，这个选项会影响调试
 
@@ -29,13 +34,13 @@ make mrproper
 export CC=/your/gcc
 make defconfig
 make kvmconfig
-# add some config
-# CONFIG_DEBUG_RODATA_TEST=y
+# modify some config
 # CONFIG_DEBUG_INFO=y
 # CONFIG_RANDOMIZE_BASE=n
 make olddefconfig
 make
 ```
+
 
 ## Image
 
@@ -96,7 +101,7 @@ sudo mkdir -p $DIR/root/.ssh/
 cat $RELEASE.id_rsa.pub | sudo tee $DIR/root/.ssh/authorized_keys
 
 # Build a disk image
-dd if=/dev/zero of=$RELEASE.img bs=1M seek=2047 count=1
+dd if=/dev/zero of=$RELEASE.img bs=1G seek=20 count=1
 sudo mkfs.ext4 -F $RELEASE.img
 sudo mkdir -p /mnt/$DIR
 sudo mount -o loop $RELEASE.img /mnt/$DIR
@@ -142,6 +147,15 @@ kill $(cat vm.pid)
 ```bash
 ssh -i focal.id_rsa -p 10022 -o "StrictHostKeyChecking no" root@localhost
 #ssh -i eoan.id_rsa -p 10022 -o "StrictHostKeyChecking no" root@localhost
+```
+
+登录guest后首先替换源　/etc/apt/source.list , 然后 apt update
+
+如果需要在　guest 编译驱动或者内核源码，需要安装依赖
+
+```bash
+apt-get build-dep linux
+apt-get install libncurses-dev flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf
 ```
 
 ## Gdb 
