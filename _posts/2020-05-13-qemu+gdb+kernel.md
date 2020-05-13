@@ -22,7 +22,7 @@ git clone https://github.com/torvalds/linux.git $KERNEL
 ```
 
 用 ubuntu 维护的内核代码, 下载对应版本的源码包并解压,　比如 ubuntu20.04 对应的源码包为　linux-source-5.4.0
-[http://archive.ubuntu.com/ubuntu/pool/main/l/linux/linux_5.4.0.orig.tar.gz](focal linux-source-5.4.0)
+[focal linux-source-5.4.0](http://archive.ubuntu.com/ubuntu/pool/main/l/linux/linux_5.4.0.orig.tar.gz)
 
 如果是调试内核漏洞利用，则推荐使用主线的源码，因为对应用层依赖不多，如果是调试内核模块或者工具，则推荐使用ubuntu维护的源码包，因为很多依赖的库需要从ubuntu的源下载，内核跟ubuntu保持一致比较省事
 
@@ -168,6 +168,6 @@ apt-get install libncurses-dev flex bison openssl libssl-dev dkms libelf-dev lib
 
 # Ref
 
-[https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md](setup_ubuntu-host_qemu-vm_x86-64-kernel.md)
-[http://nickdesaulniers.github.io/blog/2018/10/24/booting-a-custom-linux-kernel-in-qemu-and-debugging-it-with-gdb/](booting-a-custom-linux-kernel-in-qemu-and-debugging-it-with-gdb)
+[setup_ubuntu-host_qemu-vm_x86-64-kernel.md](https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md)
+[booting-a-custom-linux-kernel-in-qemu-and-debugging-it-with-gdb](http://nickdesaulniers.github.io/blog/2018/10/24/booting-a-custom-linux-kernel-in-qemu-and-debugging-it-with-gdb/)
 
