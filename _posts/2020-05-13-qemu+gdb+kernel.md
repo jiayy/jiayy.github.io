@@ -78,7 +78,7 @@ echo 'T0:23:respawn:/sbin/getty -L ttyS0 115200 vt100' | sudo tee -a $DIR/etc/in
 # 必须关闭 kaslr 才可以正常调试内核
 echo 'GRUB_CMDLINE_LINUX_DEFAULT="nokaslr"' | sudo tee -a $DIR/etc/default/grub
 # /etc/network/interfaces 已经被 ubuntu 放弃，改为了　netplan 方式
-printf 'network:\n\t version: 2\n\t renderer: networkd\n\t ethernets:\n\t\t enp0s3:\n\t\t\t dhcp4: true\n' | sudo tee -a $DIR/etc/netplan/01-network-manager-all.yaml
+printf 'network:\n    version: 2\n    renderer: networkd\n    ethernets:\n        enp0s3:\n            dhcp4: true\n' | sudo tee -a $DIR/etc/netplan/01-network-manager-all.yaml
 echo '/dev/root / ext4 defaults 0 0' | sudo tee -a $DIR/etc/fstab
 echo 'debugfs /sys/kernel/debug debugfs defaults 0 0' | sudo tee -a $DIR/etc/fstab
 echo 'securityfs /sys/kernel/security securityfs defaults 0 0' | sudo tee -a $DIR/etc/fstab
